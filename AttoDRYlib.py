@@ -1,28 +1,26 @@
-# This is a Python script for direct control of the AttoDRY2100 cryostat.
-# It depends on the .dll files provided by Attocube (AttoDRYLib.dll) which
+# This is a Python script for direct control of the AttoDRY2200 cryostat.
+# It depends on the .dll files provided by Attocube (attoDRYLib64bit.dll) which
 # has to be referred to in the dll_directory variable. Not all functions
 # are implemented in the given code, since control is still maintained with
 # the attoDRY labview interface. All additional function names are found in the dll_list.txt
 # file. 
 # You need to install the 2016 labview runtime engine. Additinally, the 
-# script will only work with a 32 bit python version. 
+# script will only work with a 64 bit python version. 
 #
-# AttoDRY2100lib.py and PyAttoDRY2100.py are written by 
+# AttoDRY2100.py and PyAttoDRY.py are written by 
 # Christoph Murer
 # Magnetism and interface Physics, ETH Zurich
 # christoph.murer@mat.ethz.ch or chmurer@gmail.com
 # script started on 04-Sep-2020
 # inspired by the ANC350 scrips written by Rob Heath and Brian Schaefer (https://github.com/Laukei/pyanc350)
 
-# define the path to the AttoDRY DLL:
-dll_directory = 'C:\\Program Files (x86)\\National Instruments\\LabVIEW 2020\\user.lib\\attoDRYLib\\'
+# This code has been edited by Nathan McLaughlin for 64-bit versions of the DLL and python interpreter
 
+# define the path to the AttoDRY DLL:
+dll_path = 'C:\\Users\\nmclaughlin7\\Documents\\attoDRY_DLL\\DLL\\attoDRYLib64bit.dll'
 
 import ctypes
 import os
-os.add_dll_directory(dll_directory)
-
-
 
 # error code (EC) as described by 
 EC_Ok = 0                      # No error
@@ -109,124 +107,124 @@ def checkError(code,func,args):
 
 
 # load attoDRYLib...
-attoDRYLib = ctypes.windll.attoDRYLib
+attoDRYLib = ctypes.WinDLL(dll_path)
 #############################################################################################################
 ##### aliases for the DLL functions (only selected ones; we want to change field and temperature only):
 #############################################################################################################
 
 ##### communication
-getActionMessage = getattr(attoDRYLib,'AttoDRY_Interface_getActionMessage')
-begin = getattr(attoDRYLib,'AttoDRY_Interface_begin')
-Cancel = getattr(attoDRYLib,'AttoDRY_Interface_Cancel')
-Confirm = getattr(attoDRYLib,'AttoDRY_Interface_Confirm')
-Connect = getattr(attoDRYLib,'AttoDRY_Interface_Connect')
-Main = getattr(attoDRYLib,'AttoDRY_Interface_Main')
-Disconnect = getattr(attoDRYLib,'AttoDRY_Interface_Disconnect')
-end = getattr(attoDRYLib,'AttoDRY_Interface_end')
-getAttodryErrorMessage = getattr(attoDRYLib,'AttoDRY_Interface_getAttodryErrorMessage')
-getAttodryErrorStatus = getattr(attoDRYLib,'AttoDRY_Interface_getAttodryErrorStatus')
-goToBaseTemperature = getattr(attoDRYLib,'AttoDRY_Interface_goToBaseTemperature')
-lowerError = getattr(attoDRYLib,'AttoDRY_Interface_lowerError')
+getActionMessage = getattr(attoDRYLib,'GetActionMessage')
+begin = getattr(attoDRYLib,'Begin')
+Cancel = getattr(attoDRYLib,'Cancel')
+Confirm = getattr(attoDRYLib,'Confirm')
+Connect = getattr(attoDRYLib,'Connect')
+Main = getattr(attoDRYLib,'Main')
+Disconnect = getattr(attoDRYLib,'Disconnect')
+end = getattr(attoDRYLib,'End')
+getAttodryErrorMessage = getattr(attoDRYLib,'GetAttodryErrorMessage')
+getAttodryErrorStatus = getattr(attoDRYLib,'GetAttodryErrorStatus')
+goToBaseTemperature = getattr(attoDRYLib,'GoToBaseTemperature')
+lowerError = getattr(attoDRYLib,'LowerError')
 LVDLLStatus = getattr(attoDRYLib,'LVDLLStatus')
-startLogging = getattr(attoDRYLib,'AttoDRY_Interface_startLogging')
-startSampleExchange = getattr(attoDRYLib,'AttoDRY_Interface_startSampleExchange')
-stopLogging = getattr(attoDRYLib,'AttoDRY_Interface_stopLogging')
-sweepFieldToZero = getattr(attoDRYLib,'AttoDRY_Interface_sweepFieldToZero')
-downloadSampleTemperatureSensorCalibrationCurve = getattr(attoDRYLib,'AttoDRY_Interface_downloadSampleTemperatureSensorCalibrationCurve')
-downloadTemperatureSensorCalibrationCurve = getattr(attoDRYLib,'AttoDRY_Interface_downloadTemperatureSensorCalibrationCurve')
-uploadSampleTemperatureCalibrationCurve = getattr(attoDRYLib,'AttoDRY_Interface_uploadSampleTemperatureCalibrationCurve')
-uploadTemperatureCalibrationCurve = getattr(attoDRYLib,'AttoDRY_Interface_uploadTemperatureCalibrationCurve')
+startLogging = getattr(attoDRYLib,'StartLogging')
+startSampleExchange = getattr(attoDRYLib,'StartSampleExchange')
+stopLogging = getattr(attoDRYLib,'StopLogging')
+sweepFieldToZero = getattr(attoDRYLib,'SweepFieldToZero')
+downloadSampleTemperatureSensorCalibrationCurve = getattr(attoDRYLib,'DownloadSampleTemperatureSensorCalibrationCurve')
+downloadTemperatureSensorCalibrationCurve = getattr(attoDRYLib,'DownloadTemperatureSensorCalibrationCurve')
+uploadSampleTemperatureCalibrationCurve = getattr(attoDRYLib,'UploadSampleTemperatureCalibrationCurve')
+uploadTemperatureCalibrationCurve = getattr(attoDRYLib,'UploadTemperatureCalibrationCurve')
 
 ##### asking questions
-isControllingField = getattr(attoDRYLib,'AttoDRY_Interface_isControllingField')
-isControllingTemperature = getattr(attoDRYLib,'AttoDRY_Interface_isControllingTemperature')
-isDeviceConnected = getattr(attoDRYLib,'AttoDRY_Interface_isDeviceConnected')
-isDeviceInitialised = getattr(attoDRYLib,'AttoDRY_Interface_isDeviceInitialised')
-isGoingToBaseTemperature = getattr(attoDRYLib,'AttoDRY_Interface_isGoingToBaseTemperature')
-isExchangeHeaterOn = getattr(attoDRYLib,'AttoDRY_Interface_isExchangeHeaterOn')
-isPersistentModeSet = getattr(attoDRYLib,'AttoDRY_Interface_isPersistentModeSet')
-isPumping = getattr(attoDRYLib,'AttoDRY_Interface_isPumping')
-isSampleExchangeInProgress = getattr(attoDRYLib,'AttoDRY_Interface_isSampleExchangeInProgress')
-isSampleHeaterOn = getattr(attoDRYLib,'AttoDRY_Interface_isSampleHeaterOn')
-isSampleReadyToExchange = getattr(attoDRYLib,'AttoDRY_Interface_isSampleReadyToExchange')
-isSystemRunning = getattr(attoDRYLib,'AttoDRY_Interface_isSystemRunning')
-isPumping = getattr(attoDRYLib,'AttoDRY_Interface_isPumping')
-isZeroingField = getattr(attoDRYLib,'AttoDRY_Interface_isZeroingField')
+isControllingField = getattr(attoDRYLib,'IsControllingField')
+isControllingTemperature = getattr(attoDRYLib,'IsControllingTemperature')
+isDeviceConnected = getattr(attoDRYLib,'IsDeviceConnected')
+isDeviceInitialised = getattr(attoDRYLib,'IsDeviceInitialised')
+isGoingToBaseTemperature = getattr(attoDRYLib,'IsGoingToBaseTemperature')
+isExchangeHeaterOn = getattr(attoDRYLib,'IsExchangeHeaterOn')
+isPersistentModeSet = getattr(attoDRYLib,'IsPersistentModeSet')
+isPumping = getattr(attoDRYLib,'IsPumping')
+isSampleExchangeInProgress = getattr(attoDRYLib,'IsSampleExchangeInProgress')
+isSampleHeaterOn = getattr(attoDRYLib,'IsSampleHeaterOn')
+isSampleReadyToExchange = getattr(attoDRYLib,'IsSampleReadyToExchange')
+isSystemRunning = getattr(attoDRYLib,'IsSystemRunning')
+isPumping = getattr(attoDRYLib,'IsPumping')
+isZeroingField = getattr(attoDRYLib,'IsZeroingField')
 
 ##### queries
-queryReservoirTsetColdSample = getattr(attoDRYLib,'AttoDRY_Interface_queryReservoirTsetColdSample') 
-queryReservoirTsetWarmMagnet = getattr(attoDRYLib,'AttoDRY_Interface_queryReservoirTsetWarmMagnet')
-queryReservoirTsetWarmSample = getattr(attoDRYLib,'AttoDRY_Interface_queryReservoirTsetWarmSample')
-querySampleHeaterMaximumPower = getattr(attoDRYLib,'AttoDRY_Interface_querySampleHeaterMaximumPower')
-querySampleHeaterResistance = getattr(attoDRYLib,'AttoDRY_Interface_querySampleHeaterResistance')
-querySampleHeaterWireResistance = getattr(attoDRYLib,'AttoDRY_Interface_querySampleHeaterWireResistance')
+queryReservoirTsetColdSample = getattr(attoDRYLib,'QueryReservoirTsetColdSample') 
+queryReservoirTsetWarmMagnet = getattr(attoDRYLib,'QueryReservoirTsetWarmMagnet')
+queryReservoirTsetWarmSample = getattr(attoDRYLib,'QueryReservoirTsetWarmSample')
+querySampleHeaterMaximumPower = getattr(attoDRYLib,'QuerySampleHeaterMaximumPower')
+querySampleHeaterResistance = getattr(attoDRYLib,'QuerySampleHeaterResistance')
+querySampleHeaterWireResistance = getattr(attoDRYLib,'QuerySampleHeaterWireResistance')
 
 ##### toggle commands
-toggleCryostatInValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleCryostatInValve')
-toggleCryostatOutValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleCryostatOutValve')
-toggleDumpInValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleDumpInValve')
-toggleDumpOutValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleDumpOutValve')
-toggleExchangeHeaterControl = getattr(attoDRYLib,'AttoDRY_Interface_toggleExchangeHeaterControl')
-toggleFullTemperatureControl = getattr(attoDRYLib,'AttoDRY_Interface_toggleFullTemperatureControl')
-toggleHeliumValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleHeliumValve')
-toggleInnerVolumeValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleInnerVolumeValve')
-toggleOuterVolumeValve = getattr(attoDRYLib,'AttoDRY_Interface_toggleOuterVolumeValve')
-toggleMagneticFieldControl = getattr(attoDRYLib,'AttoDRY_Interface_toggleMagneticFieldControl')
-togglePersistentMode = getattr(attoDRYLib,'AttoDRY_Interface_togglePersistentMode')
-togglePump = getattr(attoDRYLib,'AttoDRY_Interface_togglePump')
-togglePumpValve = getattr(attoDRYLib,'AttoDRY_Interface_togglePumpValve')
-toggleSampleTemperatureControl = getattr(attoDRYLib,'AttoDRY_Interface_toggleSampleTemperatureControl') 
-toggleStartUpShutdown = getattr(attoDRYLib,'AttoDRY_Interface_toggleStartUpShutdown') 
+toggleCryostatInValve = getattr(attoDRYLib,'ToggleCryostatInValve')
+toggleCryostatOutValve = getattr(attoDRYLib,'ToggleCryostatOutValve')
+toggleDumpInValve = getattr(attoDRYLib,'ToggleDumpInValve')
+toggleDumpOutValve = getattr(attoDRYLib,'ToggleDumpOutValve')
+toggleExchangeHeaterControl = getattr(attoDRYLib,'ToggleExchangeHeaterControl')
+toggleFullTemperatureControl = getattr(attoDRYLib,'ToggleFullTemperatureControl')
+toggleHeliumValve = getattr(attoDRYLib,'ToggleHeliumValve')
+toggleInnerVolumeValve = getattr(attoDRYLib,'ToggleInnerVolumeValve')
+toggleOuterVolumeValve = getattr(attoDRYLib,'ToggleOuterVolumeValve')
+toggleMagneticFieldControl = getattr(attoDRYLib,'ToggleMagneticFieldControl')
+togglePersistentMode = getattr(attoDRYLib,'TogglePersistentMode')
+togglePump = getattr(attoDRYLib,'TogglePump')
+togglePumpValve = getattr(attoDRYLib,'TogglePumpValve')
+toggleSampleTemperatureControl = getattr(attoDRYLib,'ToggleSampleTemperatureControl') 
+toggleStartUpShutdown = getattr(attoDRYLib,'ToggleStartUpShutdown') 
 
 ##### get values
-getCryostatInPressure = getattr(attoDRYLib,'AttoDRY_Interface_getCryostatInPressure')
-getCryostatInValve = getattr(attoDRYLib,'AttoDRY_Interface_getCryostatInValve')
-getCryostatOutPressure = getattr(attoDRYLib,'AttoDRY_Interface_getCryostatOutPressure')
-getCryostatOutValve = getattr(attoDRYLib,'AttoDRY_Interface_getCryostatOutValve')
-getDumpInValve = getattr(attoDRYLib,'AttoDRY_Interface_getDumpInValve')
-getDumpOutValve = getattr(attoDRYLib,'AttoDRY_Interface_getDumpOutValve')
-getDumpPressure = getattr(attoDRYLib,'AttoDRY_Interface_getDumpPressure')
-getHeliumValve = getattr(attoDRYLib,'AttoDRY_Interface_getHeliumValve')
-getInnerVolumeValve = getattr(attoDRYLib,'AttoDRY_Interface_getInnerVolumeValve')
-getOuterVolumeValve = getattr(attoDRYLib,'AttoDRY_Interface_getOuterVolumeValve')
-getReservoirHeaterPower = getattr(attoDRYLib,'AttoDRY_Interface_getReservoirHeaterPower')
-getReservoirTemperature = getattr(attoDRYLib,'AttoDRY_Interface_getReservoirTemperature')
-getReservoirTsetColdSample = getattr(attoDRYLib,'AttoDRY_Interface_getReservoirTsetColdSample')
-getReservoirTsetWarmMagnet = getattr(attoDRYLib,'AttoDRY_Interface_getReservoirTsetWarmMagnet')
-getReservoirTsetWarmSample = getattr(attoDRYLib,'AttoDRY_Interface_getReservoirTsetWarmSample')
-getPressure = getattr(attoDRYLib,'AttoDRY_Interface_getPressure')
-get40KStageTemperature = getattr(attoDRYLib,'AttoDRY_Interface_get40KStageTemperature')
-get4KStageTemperature = getattr(attoDRYLib,'AttoDRY_Interface_get4KStageTemperature')
-getDerivativeGain = getattr(attoDRYLib,'AttoDRY_Interface_getDerivativeGain')
-getIntegralGain = getattr(attoDRYLib,'AttoDRY_Interface_getIntegralGain')
-getMagneticField = getattr(attoDRYLib,'AttoDRY_Interface_getMagneticField')
-getMagneticFieldSetPoint = getattr(attoDRYLib,'AttoDRY_Interface_getMagneticFieldSetPoint')
-getProportionalGain = getattr(attoDRYLib,'AttoDRY_Interface_getProportionalGain')
-getSampleHeaterMaximumPower = getattr(attoDRYLib,'AttoDRY_Interface_getSampleHeaterMaximumPower')
-getSampleHeaterPower = getattr(attoDRYLib,'AttoDRY_Interface_getSampleHeaterPower')
-getSampleHeaterResistance = getattr(attoDRYLib,'AttoDRY_Interface_getSampleHeaterResistance')
-getSampleHeaterWireResistance = getattr(attoDRYLib,'AttoDRY_Interface_getSampleHeaterWireResistance')
-getSampleTemperature = getattr(attoDRYLib,'AttoDRY_Interface_getSampleTemperature')
-getUserTemperature = getattr(attoDRYLib,'AttoDRY_Interface_getUserTemperature')
-getVtiHeaterPower = getattr(attoDRYLib,'AttoDRY_Interface_getVtiHeaterPower')
-getVtiTemperature = getattr(attoDRYLib,'AttoDRY_Interface_getVtiTemperature')
-getPumpValve = getattr(attoDRYLib,'AttoDRY_Interface_getPumpValve')
-getTurbopumpFrequency = getattr(attoDRYLib,'AttoDRY_Interface_getTurbopumpFrequency')
+getCryostatInPressure = getattr(attoDRYLib,'GetCryostatInPressure')
+getCryostatInValve = getattr(attoDRYLib,'GetCryostatInValve')
+getCryostatOutPressure = getattr(attoDRYLib,'GetCryostatOutPressure')
+getCryostatOutValve = getattr(attoDRYLib,'GetCryostatOutValve')
+getDumpInValve = getattr(attoDRYLib,'GetDumpInValve')
+getDumpOutValve = getattr(attoDRYLib,'GetDumpOutValve')
+getDumpPressure = getattr(attoDRYLib,'GetDumpPressure')
+getHeliumValve = getattr(attoDRYLib,'GetHeliumValve')
+getInnerVolumeValve = getattr(attoDRYLib,'GetInnerVolumeValve')
+getOuterVolumeValve = getattr(attoDRYLib,'GetOuterVolumeValve')
+getReservoirHeaterPower = getattr(attoDRYLib,'GetReservoirHeaterPower')
+getReservoirTemperature = getattr(attoDRYLib,'GetReservoirTemperature')
+getReservoirTsetColdSample = getattr(attoDRYLib,'GetReservoirTsetColdSample')
+getReservoirTsetWarmMagnet = getattr(attoDRYLib,'GetReservoirTsetWarmMagnet')
+getReservoirTsetWarmSample = getattr(attoDRYLib,'GetReservoirTsetWarmSample')
+getPressure = getattr(attoDRYLib,'GetPressure')
+get40KStageTemperature = getattr(attoDRYLib,'Get40KStageTemperature')
+get4KStageTemperature = getattr(attoDRYLib,'Get4KStageTemperature')
+getDerivativeGain = getattr(attoDRYLib,'GetDerivativeGain')
+getIntegralGain = getattr(attoDRYLib,'GetIntegralGain')
+getMagneticField = getattr(attoDRYLib,'GetMagneticField')
+getMagneticFieldSetPoint = getattr(attoDRYLib,'GetMagneticFieldSetPoint')
+getProportionalGain = getattr(attoDRYLib,'GetProportionalGain')
+getSampleHeaterMaximumPower = getattr(attoDRYLib,'GetSampleHeaterMaximumPower')
+getSampleHeaterPower = getattr(attoDRYLib,'GetSampleHeaterPower')
+getSampleHeaterResistance = getattr(attoDRYLib,'GetSampleHeaterResistance')
+getSampleHeaterWireResistance = getattr(attoDRYLib,'GetSampleHeaterWireResistance')
+getSampleTemperature = getattr(attoDRYLib,'GetSampleTemperature')
+getUserTemperature = getattr(attoDRYLib,'GetUserTemperature')
+getVtiHeaterPower = getattr(attoDRYLib,'GetVtiHeaterPower')
+getVtiTemperature = getattr(attoDRYLib,'GetVtiTemperature')
+getPumpValve = getattr(attoDRYLib,'GetPumpValve')
+getTurbopumpFrequency = getattr(attoDRYLib,'GetTurbopumpFrequency')
 
 ##### set values
-setDerivativeGain = getattr(attoDRYLib,'AttoDRY_Interface_setDerivativeGain')
-setIntegralGain = getattr(attoDRYLib,'AttoDRY_Interface_setIntegralGain')
-setProportionalGain = getattr(attoDRYLib,'AttoDRY_Interface_setProportionalGain')
-setReservoirTsetColdSample = getattr(attoDRYLib,'AttoDRY_Interface_setReservoirTsetColdSample')
-setReservoirTsetWarmMagnet = getattr(attoDRYLib,'AttoDRY_Interface_setReservoirTsetWarmMagnet')
-setReservoirTsetWarmSample = getattr(attoDRYLib,'AttoDRY_Interface_setReservoirTsetWarmSample')
-setSampleHeaterMaximumPower = getattr(attoDRYLib,'AttoDRY_Interface_setSampleHeaterMaximumPower')
-setSampleHeaterPower = getattr(attoDRYLib,'AttoDRY_Interface_setSampleHeaterPower')
-setSampleHeaterResistance = getattr(attoDRYLib,'AttoDRY_Interface_setSampleHeaterResistance')
-setSampleHeaterWireResistance = getattr(attoDRYLib,'AttoDRY_Interface_setSampleHeaterWireResistance')
-setUserMagneticField = getattr(attoDRYLib,'AttoDRY_Interface_setUserMagneticField')
-setUserTemperature = getattr(attoDRYLib,'AttoDRY_Interface_setUserTemperature')
-setVTIHeaterPower = getattr(attoDRYLib,'AttoDRY_Interface_setVTIHeaterPower')
+setDerivativeGain = getattr(attoDRYLib,'SetDerivativeGain')
+setIntegralGain = getattr(attoDRYLib,'SetIntegralGain')
+setProportionalGain = getattr(attoDRYLib,'SetProportionalGain')
+setReservoirTsetColdSample = getattr(attoDRYLib,'SetReservoirTsetColdSample')
+setReservoirTsetWarmMagnet = getattr(attoDRYLib,'SetReservoirTsetWarmMagnet')
+setReservoirTsetWarmSample = getattr(attoDRYLib,'SetReservoirTsetWarmSample')
+setSampleHeaterMaximumPower = getattr(attoDRYLib,'SetSampleHeaterMaximumPower')
+setSampleHeaterPower = getattr(attoDRYLib,'SetSampleHeaterPower')
+setSampleHeaterResistance = getattr(attoDRYLib,'SetSampleHeaterResistance')
+setSampleHeaterWireResistance = getattr(attoDRYLib,'SetSampleHeaterWireResistance')
+setUserMagneticField = getattr(attoDRYLib,'SetUserMagneticField')
+setUserTemperature = getattr(attoDRYLib,'SetUserTemperature')
+setVTIHeaterPower = getattr(attoDRYLib,'SetVTIHeaterPower')
 
 
 
